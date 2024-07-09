@@ -1,5 +1,8 @@
 const mongoose =require('mongoose')
-const url='mongodb+srv://Samhitha1212:Samhitha%40121@cluster0.yn8m78o.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+const dotenv=require("dotenv")
+dotenv.config()
+
+const url=process.env.MONGO_DB_URL
 
 module.exports.connect=()=>{
   mongoose.connect(url,console.log("Data base is connected"))

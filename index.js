@@ -3,11 +3,20 @@ const app=express()
 const http=require('http')
 const cors=require('cors')
 const {Server}=require('socket.io')
+const dotenv=require("dotenv")
+
 const UserRoutes=require('./Routes/UserRoutes.js')
+const MessageRoutes=require('./Routes/MessageRoutes.js')
+const ChatRoutes=require('./Routes/chatRoutes.js')
 const {connect} =require('./db.js')
 
 
+dotenv.config()
+
+const PORT=process.env.PORT || 5001
+
 app.use(cors())
+
 const server=http.createServer(app)
 const io=new Server(server,{
   cors:{
@@ -18,6 +27,8 @@ const io=new Server(server,{
 
 app.use(express.json())
 app.use("/api/user",UserRoutes)
+app.use("/api/chat",ChatRoutes)
+app.use("/api/message",MessageRoutes)
 connect()
 
 
@@ -46,5 +57,5 @@ app.get('/',(req,res)=>{
 // })
 
 server.listen(5001,()=>{
-  console.log("Server running")
+  console.log("Server running ",PORT)
 })
