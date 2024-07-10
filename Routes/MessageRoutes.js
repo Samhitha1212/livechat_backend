@@ -1,8 +1,9 @@
 const express=require('express')
 const router=express.Router()
 
-const createMessage=require('../Controllers/messageControllers')
-const getChatMessages=require('../Controllers/messageControllers')
+
+const messageControllers = require('../Controllers/messageControllers')
+const{createMessage, getChatMessages}=messageControllers
 
 router.post('/:chatid',createMessage)
 router.get('/:chatid',getChatMessages)

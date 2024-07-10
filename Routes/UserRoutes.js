@@ -3,10 +3,9 @@ const router=express.Router()
 
 const User=require('../Model/UserModel')
 
-const createUser=require('../Controllers/usercontroller')
-const getUserByID=require('../Controllers/usercontroller')
-const getUsers=require('../Controllers/usercontroller')
-const UpdateUser=require('../Controllers/usercontroller')
+
+const userControllers=require('../Controllers/usercontroller')
+const{ createUser,getUserByID,getUsers,UpdateUser}=userControllers
 
 router.post('/',createUser)
 router.get('/', getUsers)

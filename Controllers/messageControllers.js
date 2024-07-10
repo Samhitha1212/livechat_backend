@@ -8,15 +8,19 @@ const message=req.body
 const {chatid}=req.params
 const newMessage= new messageModel(message)
 const savedmessage=await newMessage.save()
-chatModel.findByIdAndUpdate(chatid,{$push:{messages:savedmessage._id}})
+const updatedChat=await chatModel.findByIdAndUpdate(chatid,{
+  $push:{messages:savedmessage._id},
+  lastMessage:savedmessage._id
+},{new:true})
 res.status(201).json(savedmessage)
 }
+
 
 
 const getChatMessages=async(req,res)=>{
 
   const {chatid}=req.params
-  const chat=chatModel.findById(chatid)
+  const chat= await Chat.findById(chatid)
   messageModel.find({_id: {$in: chat.messages}}).then(data=>{
     res.status(200).json(data)
   }).catch(err=>{
@@ -26,4 +30,4 @@ const getChatMessages=async(req,res)=>{
 }
 
 
-module.exports=[createMessage,getChatMessages]
+module.exports={createMessage,getChatMessages}

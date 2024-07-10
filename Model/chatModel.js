@@ -14,6 +14,10 @@ const chat=new mongoose.Schema({
     }],
     default:[],
   }],
+  lastMessage:{
+    type:mongoose.Schema.Types.ObjectId,
+      ref:Message,
+  },
   chatType:{
     type:String,
     enum:["one-to-one","group"],
