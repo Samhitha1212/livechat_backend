@@ -3,26 +3,54 @@ const Chat = require("../Model/chatModel")
 const Message = require("../Model/messageModel")
 const UserModel = require("../Model/UserModel")
 const User = require("../Model/UserModel")
+const { getReceiversSocketId ,io} = require("../socket/socket")
 
 const createChat=async(req,res)=>{
+  let savedmessage;
   console.log(req.body)
   const {chat}=req.body
   if(chat.chatType==="one-to-one"){
     const {message}=req.body
     console.log(message)
     newMessage= new Message(message)
-   const savedmessage=await newMessage.save()
-   chat.messages=[savedmessage._id]
-   chat.lastMessage=savedmessage._id
+    savedmessage=await newMessage.save().then(savedmessage=>{
+    chat.messages=[savedmessage._id]
+    chat.lastMessage=savedmessage._id
+   }).catch(e=>console.log(e))
+  
   }
   
   newChat= new Chat(chat)
   newChat.save().then(data=>{
     chat.members.forEach(userid => {
-       User.findByIdAndUpdate(userid,{$push:{chats:data._id}},{new:true}).then(data=>{
+       User.findByIdAndUpdate(userid,{
+        $push:{chats:data._id},
+      },{new:true}).then(dat=>{
        
        })
     });
+
+    const receiversSocketId=getReceiversSocketId(newChat.members
+      //   newChat.members.filter(member=>{
+      //   return (member != message.author)
+      // })
+    )
+    if(chat.chatType ==="one-to-one"){
+      if(receiversSocketId.length >0){
+        receiversSocketId.forEach((Id)=>{
+          io.to(Id).emit("newChat",{
+           "newmessage": savedmessage,
+            "newmessagechat":data})
+        })
+      }
+    }else{
+      if(receiversSocketId.length >0){
+        receiversSocketId.forEach((Id)=>{
+          io.to(Id).emit("newChat",{
+            "newmessagechat":data})
+        })
+      }
+    }
     res.status(201).json(data)
   }).catch(err=>{
     console.log(err)
