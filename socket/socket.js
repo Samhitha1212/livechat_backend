@@ -8,7 +8,7 @@ const app=express()
 const server=http.createServer(app)
 const io=new Server(server,{
   cors:{
-    origin:'https://livechat-frontend-w5cx.onrender.com',
+    origin:'https://chatapp1212.netlify.app/',
     methods: ["GET","POST","PUT","DELETE"],
   }
 })
